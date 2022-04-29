@@ -1,0 +1,318 @@
+---
+title: "Dataclean"
+author: "dpy"
+date: "4/22/2022"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(tidycensus)
+library(sf)
+library(keyring)
+```
+
+# Load data
+```{r}
+# leoka1.ori <- read_csv("../data-raw/LEOKA_ASSAULT_TIME_WEAPON_INJURY_1995_2020.csv")
+# leoka2.ori <- read_csv("../data-raw/LEOKA_ASSIGNMENT_ACTIVITY_1995_2020.csv")
+```
+
+# Transform data sets to RDS and load them
+```{r}
+# saveRDS(leoka2.ori,file="../data/leoka2.ori.RDS")
+# saveRDS(leoka1.ori,file="../data/leoka1.ori.RDS")
+```
+
+```{r}
+leoka2<- readRDS("../data-raw/leoka2.ori.RDS")
+leoka1<- readRDS("../data-raw/leoka1.ori.RDS")
+```
+
+# Get state data
+```{r}
+data(state)
+state.full <- data.frame(state.abb, state.name)
+```
+
+# leoka2 clean
+```{r}
+leoka2 %>% 
+  filter(DATA_YEAR>2010) %>% 
+  rowwise() %>% 
+  mutate(total_wea=sum(FIREARM_ACTUAL+KNIFE_ACTUAL+HANDS_FISTS_FEET_ACTUAL+OTHER_ACTUAL)) %>% 
+  filter(total_wea!=0) %>% 
+  left_join(state.full, by = c("STATE_ABBR" = "state.abb")) %>%
+  mutate(state.name = if_else(is.na(state.name), STATE_ABBR, state.name)) %>%
+  mutate(state.name = str_replace_all(state.name, "^NB$", "Nebraska"),
+         state.name = str_replace_all(state.name, "^DC$", "District of Columbia")) %>% 
+  mutate(COUNTY_NAME = if_else(state.name == "District of Columbia", "DISTRICT OF COLUMBIA",
+                               as.character(COUNTY_NAME))) %>% 
+  select(-STATE_ABBR,-ACTIVITY_ID) %>%
+  rename(STATE = state.name) %>% 
+  filter(!(STATE %in% c("FS","GM","VI")))->leo2
+
+# Clean two counties one row
+leo2 %>% 
+  separate(COUNTY_NAME,into=c("COUNTY_NAME","COUNTY_NAME2"),sep=";",remove=TRUE) %>% 
+  select(-COUNTY_NAME2)->leo2
+
+leo2 %>% 
+  mutate(DATA_YEAR=as.factor(DATA_YEAR),
+         REGION_NAME=as.factor(REGION_NAME),
+         POPULATION_GROUP_DESC=as.factor(POPULATION_GROUP_DESC),
+         ACTIVITY_NAME=as.factor(ACTIVITY_NAME),
+         STATE=as.factor(STATE),
+         COUNTY_NAME=as.factor(COUNTY_NAME))->leo2
+```
+
+# Seperate data
+```{r}
+leo2 %>% 
+  select(DATA_YEAR,STATE, COUNTY_NAME,TWO_OFFICER_VEHICLE_ACTUAL:OTHER_ASSISTED_ACTUAL)->leo2_assign
+
+leo2 %>% 
+  select(DATA_YEAR,STATE,COUNTY_NAME, FIREARM_ACTUAL:OTHER_ACTUAL)->leo2_weapon
+```
+
+# Assignment clean
+```{r}
+leo2_assign %>% 
+  group_by(DATA_YEAR,STATE,COUNTY_NAME) %>% 
+  mutate(to_TWO_OFFICER_VEHICLE=sum(TWO_OFFICER_VEHICLE_ACTUAL),
+         to_ONE_OFFICER_ALONE=sum(ONE_OFFICER_ALONE_ACTUAL),
+         to_ONE_OFFICER_ASSISTED=sum(ONE_OFFICER_ASSISTED_ACTUAL),
+         to_DET_SPE_ASS_ALONE=sum(DET_SPE_ASS_ALONE_ACTUAL),
+         to_DET_SPE_ASS_ASSISTED=sum(DET_SPE_ASS_ASSISTED_ACTUAL),
+         to_OTHER_ALONE=sum(OTHER_ALONE_ACTUAL),
+         to_OTHER_ASSISTED_ACTUAL=sum(OTHER_ASSISTED_ACTUAL)) %>% 
+  select(-(TWO_OFFICER_VEHICLE_ACTUAL:OTHER_ASSISTED_ACTUAL)) %>% 
+  unique() %>% 
+  pivot_longer(cols=c("to_TWO_OFFICER_VEHICLE",
+                      "to_ONE_OFFICER_ALONE",
+                      "to_ONE_OFFICER_ASSISTED",
+                      "to_DET_SPE_ASS_ALONE",
+                      "to_DET_SPE_ASS_ASSISTED",
+                      "to_OTHER_ALONE",
+                      "to_OTHER_ASSISTED_ACTUAL"),
+               names_to = "ASSIGNMENT",values_to="total_per_type") %>% 
+  ungroup() %>% 
+  group_by(DATA_YEAR,STATE,COUNTY_NAME) %>% 
+  mutate(total_county=sum(total_per_type)) %>%
+  ungroup()->leo2_assign
+```
+
+# Midian income and total population of each county from Census Bureau
+```{r}
+years <- lst(2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020)
+
+mgr20 <- map_dfr(
+  years,
+  ~ get_acs(geography = "county", variables = c("B19013_001", "B01001_001", "B01001_002", "B23025_005", "B06009_005", "B01001F_001", "B01001D_001", "B01001B_001", "B01001A_001", "B01001C_001", "B01001E_001"), year = .x,
+                       sumfile = "sf3",
+                     key = key_get("CENSUS_API_KEY_SECURE")),.id = "year")
+
+Geometry1 <- get_acs(geography = "county", variables = c("B19013_001", "B01001_001", "B01001_002", "B23025_005", "B06009_005", "B01001F_001", "B01001D_001", "B01001B_001", "B01001A_001", "B01001C_001", "B01001E_001"), year = 2020, key = key_get("CENSUS_API_KEY_SECURE"), geometry = T)
+
+Geometry1 %>% 
+  select(GEOID, geometry) -> Geometry2
+
+mgr20 %>% 
+  pivot_wider(names_from = variable,
+              values_from = estimate) %>% 
+  select(year, GEOID, NAME, B19013_001, B01001_001, B01001_002, B23025_005, B06009_005, B01001F_001, B01001D_001, B01001B_001, B01001A_001, B01001C_001, B01001E_001) %>% 
+  rename(median_income = B19013_001,
+         county_pop = B01001_001,
+         male_pop = B01001_002,
+         unemployee_pop = B23025_005,
+         get_Bachelor = B06009_005,
+         others_race = B01001F_001,
+         Asian_pop = B01001D_001,
+         Black_pop = B01001B_001,
+         White_pop = B01001A_001,
+         Indian_pop = B01001C_001,
+         Hawaiian_pop = B01001E_001,
+         STATE = NAME) -> mgr20
+
+V1 <- mgr20[, c(1, 2, 3, 4)]
+V2 <- mgr20[, c(1, 2, 3, 5)]
+V3 <- mgr20[, c(1, 2, 3, 6)]
+V4 <- mgr20[, c(1, 2, 3, 7)]
+V5 <- mgr20[, c(1, 2, 3, 8)]
+V6 <- mgr20[, c(1, 2, 3, 9)]
+V7 <- mgr20[, c(1, 2, 3, 10)]
+V8 <- mgr20[, c(1, 2, 3, 11)]
+V9 <- mgr20[, c(1, 2, 3, 12)]
+V10 <- mgr20[, c(1, 2, 3, 13)]
+V11 <- mgr20[, c(1, 2, 3, 14)]
+V1 %>% 
+  filter(!is.na(median_income)) -> V1
+V2 %>% 
+  filter(!is.na(county_pop)) -> V2
+V3 %>% 
+  filter(!is.na(male_pop)) -> V3
+V4 %>% 
+  filter(!is.na(unemployee_pop)) -> V4
+V5 %>% 
+  filter(!is.na(get_Bachelor)) -> V5
+V6 %>% 
+  filter(!is.na(others_race)) -> V6
+V7 %>% 
+  filter(!is.na(Asian_pop)) -> V7
+V8 %>% 
+  filter(!is.na(Black_pop)) -> V8
+V9 %>% 
+  filter(!is.na(White_pop)) -> V9
+V10 %>% 
+  filter(!is.na(Indian_pop)) -> V10
+V11 %>% 
+  filter(!is.na(Hawaiian_pop)) -> V11
+V1 %>% 
+  left_join(V2, by = c("STATE", "year", "GEOID")) %>% 
+  left_join(V3, by = c("STATE", "year", "GEOID")) %>% 
+  left_join(V4, by = c("STATE", "year", "GEOID")) %>% 
+  left_join(V5, by = c("STATE", "year", "GEOID")) %>% 
+  left_join(V6, by = c("STATE", "year", "GEOID")) %>% 
+  left_join(V7, by = c("STATE", "year", "GEOID")) %>% 
+  left_join(V8, by = c("STATE", "year", "GEOID")) %>% 
+  left_join(V9, by = c("STATE", "year", "GEOID")) %>% 
+  left_join(V10, by = c("STATE", "year", "GEOID")) %>% 
+  left_join(V11, by = c("STATE", "year", "GEOID")) -> V12
+# V5 %>% 
+#   summarise(across(everything(), ~sum(is.na(.))))
+
+V12 %>% 
+  separate(STATE, c("County", "State"), sep = ",") -> YCSIAMA
+
+YCSIAMA %>% 
+  mutate(County = str_replace_all(County, "\\sCounty", ""),
+         County = str_replace_all(County, ".", toupper),
+         State = str_replace_all(State, "^ ", ""),
+         year = as.factor(year)) %>% 
+  rename(STATE = State,
+         COUNTY_NAME = County,
+         DATA_YEAR = year)-> YCSIAMA
+
+YCSIAMA %>% 
+  left_join(Geometry2, by = "GEOID") %>% 
+  unique() -> YCSIAMA1
+```
+
+# Weapon clean
+```{r}
+leo2_weapon %>% 
+  group_by(DATA_YEAR,STATE,COUNTY_NAME) %>% 
+  mutate(to_FIREARM_ACTUAL=sum(FIREARM_ACTUAL),
+         to_KNIFE_ACTUAL=sum(KNIFE_ACTUAL),
+         to_HANDS_FISTS_FEET_ACTUAL=sum(HANDS_FISTS_FEET_ACTUAL),
+         to_OTHER_ACTUAL=sum(OTHER_ACTUAL)) %>% 
+  select(-(FIREARM_ACTUAL:OTHER_ACTUAL)) %>% 
+  unique() %>% 
+  pivot_longer(cols=c("to_FIREARM_ACTUAL","to_KNIFE_ACTUAL","to_HANDS_FISTS_FEET_ACTUAL","to_OTHER_ACTUAL"),
+               names_to = "WEAPON",
+               values_to = "total_per_type") %>% 
+  ungroup() %>% 
+  group_by(DATA_YEAR,STATE,COUNTY_NAME) %>% 
+  mutate(total_county=sum(total_per_type)) %>% 
+  ungroup()->leo2_weapon
+  
+leo2_weapon %>% 
+  left_join(YCSIAMA1, by = c("STATE", "DATA_YEAR", "COUNTY_NAME")) -> leo2_weapon
+```
+
+# Activity clean
+```{r}
+leo2 %>% 
+  select(DATA_YEAR,STATE, COUNTY_NAME,ACTIVITY_NAME,total_wea) %>% 
+  group_by(DATA_YEAR,STATE,COUNTY_NAME) %>% 
+  mutate(total_county=sum(total_wea)) %>% 
+  ungroup() %>% 
+  rename(total_per_type = total_wea)->leo2_activity
+```
+
+# Others
+```{r}
+leo2 %>% 
+  select(DATA_YEAR,STATE,REGION_NAME,POPULATION_GROUP_DESC,COUNTY_NAME,CLEARED_COUNT,total_wea) %>% 
+  group_by(DATA_YEAR,STATE,COUNTY_NAME) %>% 
+  mutate(total_county=sum(total_wea),
+         total_county_cleared=sum(CLEARED_COUNT)) %>% 
+  ungroup() %>% 
+  select(-CLEARED_COUNT,-total_wea) %>% 
+  unique() %>% 
+  left_join(YCSIAMA, by = c("STATE", "DATA_YEAR", "COUNTY_NAME")) %>% 
+  mutate(STATE=as.factor(STATE))->leo2_other
+```
+
+# leoka1 clean
+```{r}
+leoka1 %>% 
+  filter(DATA_YEAR>2010) %>% 
+  select(-(TIME_0001_0200_CNT:TIME_2201_0000_CNT)) %>% 
+  rowwise() %>% 
+  mutate(row_total=sum(FIREARM_INJURY_CNT+FIREARM_NO_INJURY_CNT+KNIFE_INJURY_CNT+KNIFE_NO_INJURY_CNT+HANDS_FISTS_FEET_INJURY_CNT+HANDS_FISTS_FEET_NO_INJURY_CNT+OTHER_INJURY_CNT+OTHER_NO_INJURY_CNT+LEOKA_FELONY_KILLED+LEOKA_ACCIDENT_KILLED)) %>% 
+  filter(row_total!=0) %>% 
+  left_join(state.full, by = c("STATE_ABBR" = "state.abb")) %>%
+  mutate(state.name = if_else(is.na(state.name), STATE_ABBR, state.name)) %>%
+  mutate(state.name = str_replace_all(state.name, "^NB$", "Nebraska"),
+         state.name = str_replace_all(state.name, "^DC$", "District of Columbia")) %>% 
+  mutate(COUNTY_NAME = if_else(state.name == "District of Columbia", "DISTRICT OF COLUMBIA",
+                               as.character(COUNTY_NAME))) %>% 
+  select(-STATE_ABBR) %>%
+  rename(STATE = state.name) %>% 
+  filter(!(STATE %in% c("FS","GM","VI"))) %>% 
+  select(DATA_YEAR,STATE,COUNTY_NAME,FIREARM_INJURY_CNT:LEOKA_ACCIDENT_KILLED,row_total)->leo1
+
+leo1 %>% 
+  separate(COUNTY_NAME,into=c("COUNTY_NAME","COUNTY_NAME2"),sep=";",remove=TRUE) %>% 
+  select(-COUNTY_NAME2)->leo1
+```
+
+```{r}
+leo1 %>% 
+  group_by(DATA_YEAR,STATE,COUNTY_NAME) %>% 
+  mutate(to_FIREARM_INJURY_CNT=sum(FIREARM_INJURY_CNT),
+         to_FIREARM_NO_INJURY_CNT=sum(FIREARM_NO_INJURY_CNT),
+         to_KNIFE_INJURY_CNT=sum(KNIFE_INJURY_CNT),
+         to_KNIFE_NO_INJURY_CNT=sum(KNIFE_NO_INJURY_CNT),
+         to_HANDS_FISTS_FEET_INJURY_CNT=sum(HANDS_FISTS_FEET_INJURY_CNT),
+         to_HANDS_FISTS_FEET_NO_INJURY_CNT=sum(HANDS_FISTS_FEET_NO_INJURY_CNT),
+         to_OTHER_INJURY_CNT=sum(OTHER_INJURY_CNT),
+         to_OTHER_NO_INJURY_CNT=sum(OTHER_NO_INJURY_CNT),
+         to_LEOKA_FELONY_KILLED=sum(LEOKA_FELONY_KILLED),
+         to_LEOKA_ACCIDENT_KILLED=sum(LEOKA_ACCIDENT_KILLED)) %>% 
+  select(-(FIREARM_INJURY_CNT:row_total)) %>% 
+  unique() %>% 
+  ungroup() %>% 
+  pivot_longer(cols=c("to_FIREARM_INJURY_CNT","to_FIREARM_NO_INJURY_CNT",
+                      "to_KNIFE_INJURY_CNT","to_KNIFE_NO_INJURY_CNT",
+                      "to_HANDS_FISTS_FEET_INJURY_CNT","to_HANDS_FISTS_FEET_NO_INJURY_CNT",
+                      "to_OTHER_INJURY_CNT","to_OTHER_NO_INJURY_CNT",
+                      "to_LEOKA_FELONY_KILLED","to_LEOKA_ACCIDENT_KILLED"),
+               names_to="INJURY",
+               values_to = "total_per_type") %>% 
+  group_by(DATA_YEAR,STATE,COUNTY_NAME) %>% 
+  mutate(total_county=sum(total_per_type)) %>% 
+  ungroup()->leo1_injury
+```
+
+# Save to rds files
+```{r}
+saveRDS(leo2_assign,file="../data/leo2.assign.RDS")
+saveRDS(leo2_weapon,file="../data/leo2.weapon.RDS")
+saveRDS(leo2_activity,file="../data/leo2.activity.RDS")
+saveRDS(leo2_other,file="../data/leo2.other.RDS")
+saveRDS(leo1_injury,file="../data/leo1_injury.RDS")
+```
+
+# Load data
+```{r}
+leo2_other<- readRDS("../data/leo2.other.RDS")
+leo2_activity<- readRDS("../data/leo2.activity.RDS")
+leo2_assign<- readRDS("../data/leo2.assign.RDS")
+leo2_weapon<- readRDS("../data/leo2.weapon.RDS")
+leo1_injury<- readRDS("../data/leo1.injury.RDS")
+```
+
+
+

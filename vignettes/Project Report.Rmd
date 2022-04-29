@@ -1,0 +1,245 @@
+---
+title: "Project Report"
+author: "Pinyu Chen, Daniel Bernal Ranqueva, Yaning Wu"
+date: "4/7/2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+# 1. Admin
+## App Title and Names and course of the group members
+
+   App Title: Analysis of Assaults on Law Enforcement
+   
+   Group members:
+   
+   Pinyu Chen (Data-613)
+   
+   Daniel Bernal (Data-613)
+   
+   Yaning Wu (Data-613)
+   
+
+# 2. Topic and Data
+## Updates on the description of the problem to be analyzed in the Shiny App
+
+  Our main purpose of the project is to analyze the number of assaults against law enforcement officers in the United States. We aim to provide useful insights about the total number of assaults and identify significant changes during the past decade, from 2011 to 2020.
+   
+   In addition to providing insights about totals in the United States, we seek to identify additional factors that can better explain changes in number of incidents; to do so, we will initially account for factors such as: geographical location(e.g. states, counties), type of activities of officers when they encountered assaults, and the deployment of officers(e.g. officer vehicle patrol).
+   
+  Furthermore, we speculate that demographic information of where an incident occurs may represent a significant influence on the number of assaults and frequency, therefore, we will account for factors such as age and income status for each state where we have reported incidents, we aim to integrate these aspects to our analysis to provide an additional and useful layer of information.
+ 
+  Lastly, there are two additional important variables taken into consideration: type of weapon and count of assaults. We consider these two factors as possible response variables since they were unknown before assaults happened. By this app, we seek to 
+provide a useful tool that can allow users to visualize and summarize information about incidents and provide a simple and useful statistical approach to identify incident likelihood considering the above-mentioned factors.
+
+
+  
+  
+## Updates on proposed data sources and status of data collection, cleaning, and tidying..
+
+### Assaults on Law Enforcement Officers:
+
+Link: https://crime-data-explorer.app.cloud.gov/pages/downloads
+
+LEOKA_ASSAULT_TIME_WEAPON_INJURY_1995_2020.csv, 302093 rows.
+
+LEOKA_ASSIGNMENT_ACTIVITY_1995_2020.csv, 3228659 rows.
+
+The FBI publishes data about Law Enforcement Officers Killed and Assaulted each year to provide information on whether each incident is seem as a felony or an accident, and whether the officers were on duty or not. FBI collects these data through the Uniform Crime Reporting Programs Law Enforcement Officers Killed and Assaulted (LEOKA) data collection.
+
+The data sets from above come from the Federal Bureau of Investigation Crime Data Explorer. These will be taken as the main data for analyzing.
+
+Main variables: year, state, county, agency_name, type of weapon, assignments of officers, activity of officers
+
+* This data set contains information for the years 1995 to 2020, we extracted the information from the last decade, 2011 to 2020, to use it in our analysis.
+* As each observation is the annual summary of each agency, we will group by states and report aggregates for each one of them.
+
+
+### Census  sex, and age taken into consideration for each state:
+
+Link: https://www.census.gov/programs-surveys/popest/technical-documentation/research/evaluation-estimates/2020-evaluation-estimates/2010s-state-detail.html
+
+States age, sex, income - 2010-2020.csv
+
+The data contains the age, sex, and income distribution of each state in the US and for the time frame 2010 to 2020.
+
+The main variable of this data set is followed by:
+* Age (1 to 85, 999 represents the total population of age from 1 to 85)
+* Sex (0 both, 1 male, 2 female)
+
+* Each observation is the record of the population for each year that is grouped by states.
+* We conducted pivots from rows to columns for convenient number count. That obtained the rows of each data set.
+
+### Census information of household median income for each state:
+
+Household median income
+* This data set contains information from 2011 to 2020 and it was collected from the census bureau. This data set will be integrated to the main data set of the analysis.
+
+The main variables of this data set are:
+* Year, State, and Median Income Estimate
+* We use tidycensus to download the data directly from the census bureau.
+
+
+
+## Updates on the literature review
+
+  We identified additional literature that supplements the previous literature evaluated. We found that according to Dale (2014), officers performing official duties in relatively vulnerable areas are more likely to be attacked. The characteristics of such area might include but not limited to low income, unreasonable age ratio etc. This study represents a great complement to our analysis as it supports our scope and intentions of including additional factors as the ones mentioned above, therefore, we aim to include those aspects and arrive to reasonable conclusions by using and exploring the app.
+
+Previous literature review - project plan:
+
+  After a careful review of the literature, we found that crime is a well-studied topic that has a wide variety of scopes. We identified literature that studies crime against law enforcement in a variety of scenarios such as illegal immigration and cross-border social control(McDonald, 1997). Other studies, despite their antiquity, focus on topics such as public perception towards crime and law enforcement (McIntyre, 1967) that nowadays have been the center of interesting discussions. Furthermore, other scopes include studies that focus on whether female officers improve law enforcement quality in terms of crime reporting and domestic violence (Miller & Segal, 2019). In Summary, there is a wide variety of scopes in this field and to the best of our knowledge, they do not include detailed analysis such as the one intended by this project. Given this, we consider that it will be a useful opportunity to deliver an analysis that will provide a more detailed coverage for the audience interested in this field.
+
+# 3. Final Use Case
+## Actor Description
+
+The probability of police officers being attacked is not small, reaching 11% in 2019. This problem has been considered by the FBI and data collection has been made every year. We hope that this app can provide more intuitive and sustainable reference for relevant departments, such as agencies in various regions. We hope that it can provide more reliable suggestions for the deployment of police officers' different activities, and people who are engaged in or want to engage in this industry can also get references for their career choices.
+
+## Questions of Interest
+
+   1. From 2011 to 2020, what is the change of the main weapon types in police officer assaults?
+   
+   2. Are there differences in the main weapon type across states, counties or regions? is this related to the local gun control policy?
+   
+   3. What are the relatively frequent periods of assaults in police officers across various regions?
+   
+   4. What is the relationship between the number of vehicles, the number of police officers, and the type of activities with the occurrence of the assaults?
+   
+   5. Will variables such as age, income, and sex across locations affect the count of assaults significantly?
+   
+ 
+## Choice of approach to data
+
+Data tidy: tidyverse for data cleaning.
+
+Shiny app: 
+
+Plots: bar plots, histogram plots, line plots.
+
+Analyze: Regression model, diagnostics(residual plots, Q-Q etc.)
+
+Original data sets have 302093 and 3228659 rows. The two data sets have been shrunk and combined with other referential variables. We mainly use the second data set for the shiny app. Variables with time period will not be taken into consideration. Instead, other data sets that contain information about age, income, and sex will be added in.
+
+
+
+# 4. App Design
+## General Layout with specific Tabs and Panes within Tabs)
+
+**One tab for EDA:**
+
+Histogram:
+Different types of weapon or number of records in the state and county.
+For every state, show the distribution of weapon type. Selected by year.
+
+Scatter plot:
+Overall trend of number of incidents by year.
+
+
+**One tab for statistical analysis:**
+
+ANOVA table.
+
+Summary of regression model.
+
+Diagnostics.
+
+
+**One tab of spreadsheet:**
+
+Spreadsheet of two original data sets.
+
+## Options for user data manipulations (if any, else points flow to numerical graphical analysis)
+
+User could select variables for regression model build. The result will present with type of model summary.
+
+# 5. App Design
+## Options for user numerical/graphical analysis
+
+* Users could filter one of ten years (from 2011 to 2020), observing the total count of each state through bar plots.
+
+* For categorical variables like assignment, activity, type and weapon, different categories will be presented by bar plots.
+
+* Users could choose a response variable from proposed variables, and select one or multiple predictors to fit regression models. Diagnostic plots will be presented.
+
+* We also plan to use map and show the relationship between weapon types for different states. But this module depends on project progress.
+
+## Theme
+
+The theme still be boothswatch theme version 5. (Clear style of theme to improve the vision effect of this app to the user)
+
+##  Proposed options for user statistical models and tests
+
+Regression model:
+
+Total number of attacks on officers in all institutions for each state and each year as the response variable (we are considering using weapon type as anadditional responsevariable). Variables selected as predictors include year, age, income, type of activity, etc. The goal is to construct a regression model for the user and presenting the summary output that indicates significance of each variable.
+
+With will also provide assumptions checking to determine if the variables selected are appropriate(residual, qq plot, etc).
+
+ANOVA table to check differences across states in terms of weapon usage and/or number of incidents.
+   
+# 6. Ethical Review    
+## Update of ethics review
+
+While assessing the stages or our project, we considered several factors to identify possible ethical issues. The assessment is composed of two parts that contain rules and policies that we must follow throughout the project and emerging biases that could compromise our process and the outcome of the analysis.
+The first elements that we must account for are the rules, policies, and deliverables of the project itself that are closely accompanied by the American University’s Student Code of Conduct to ensure transparency and student compliance with our deliverables.
+The second set of elements are related to the evaluation and selection of our data. Our main concern is to make our work informative without violating privacy of individuals involved in crimes, therefore, it was important to select sources that didn’t contain any personal identifiable information that could compromise our research intentions.
+Additionally, we identified ethical challenges that can arise from our own biases or the biases of others affecting our data, thoughts, and actions. We considered availability heuristic bias given the data sources that we encountered, our sources must have the information and richness required for our analysis. Furthermore, we are aware of the bandwagon effect, we understand that accountability is what matters most and all opinions are important. Overconfidence is a concern that we will be evaluated as the project develops since it can become an issue in the future if we don’t plan well enough.
+Lastly, and moving forward, we will assess biases across the life cycle of the project because there could be emerging conflicts that must be addressed and solved together to be able to meet project expectations and deliver high quality outcomes. 
+   
+# 7. Demonstration Outline and Responsibilities  
+## Outline, Who and Time Allocation
+
+There is a slightly modification about the schedule.
+
+   Data clean Pinyu Chen, Yaning Wu, Daniel Bernal (By 8th Apr)
+   
+   EDA Daniel Bernal (By 14th Apr)
+   
+   Regression Pinyu Chen (By 14th Apr)
+   
+   ANOVA, diagnostic Yaning Wu (By 14th Apr)
+   
+   UI of shiny app - Person who creates the server part will do the corresponding UI part. The schedule will probably change according to the progress.
+   
+# 8. Collaboration 
+## Status of collaboration and any issues
+
+There is a quite confused problem at the data clean stage.
+
+  1. The raw data is too big , over 500M, with the help of Professor Ressler, we shrunk it to RDS files.
+  
+  2. Every observation of the data does not represent an assault, it is an annual summary of each agency, hence it is very difficult to create a common use table in the reactive section. That means that the code is not reproducible. About this difficulty, we will discuss it with the professor.
+  
+  3. Our response variables probably are not only the count of assaults, the weapon type also should be response since it is information after assaults happened.
+  
+  4. The parameters for map (geometry) still need to be gathered, we are trying to figure out how to manage the map to make it understandable.
+  
+  The stage of data clean is a little bit late since it takes time to figure out how to present the data. But when the data clean finishes, the remaining work will be relatively handy.
+
+
+# 9. Schedule and Risk    
+## Identify any major risks to completion and proposed mitigation measures
+
+As there are no documents about the data set to identify how many agencies a county has, we worried there will be overlapping statistics.
+
+## Updated Dates for Major Phases and Milestones, e.g., Gathering of Data, Data Preparation, Milestones for developing the App, Code Cutoff, Producing the Vignette, Rehearsal of Demonstration
+   
+   3/28/2022 ~ 4/4 Data gathering
+   
+   4/4/2022 ~ 4/8/2022 Data clean and app designed
+   
+   4/8 ~ 4/21 App code implementation
+   
+   4/22/2022 Code Cutoff 
+   
+   4/19/2022 ~ 4/27/2022 Producing the Vignette 
+
+# 10. References
+McDonald, W. (1997). Crime and Law Enforcement in the Global Village. Academy of Criminal Justice Sciences Series, https://www.ojp.gov/ncjrs/virtual-library/abstracts/crime-and-law-enforcement-global-village.
+
+McIntyre, J. (1967). Public Attitudes toward Crime and Law Enforcement. The ANNALS of the American Academy of Political and Social Science, 34-46, https://journals.sagepub.com/doi/abs/10.1177/000271626737400104.
+
+Miller, A. R., & Segal, C. (2019). Do Female Officers Improve Law Enforcement Quality? Effects on Crime Reporting and Domestic Violence . The Review of Economic Studies, Volume 86, Issue 5, 2220–2247, https://academic.oup.com/restud/article-abstract/86/5/2220/5101317.
+
+Willits, D. W. (2014). The organisational structure of police departments and assaults on police officers. International Journal of Police Science & Management, 16(2), 140-154.

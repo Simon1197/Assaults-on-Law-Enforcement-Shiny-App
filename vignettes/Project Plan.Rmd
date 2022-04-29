@@ -1,0 +1,174 @@
+---
+title: "Project Plan"
+author: "Pinyu Chen, Daniel Bernal Ranqueva, Yaning Wu"
+date: "3/17/2022"
+output:
+  html_document:
+    df_print: paged
+---
+
+# 1. Admin
+## App Title and Names and course of the group members
+
+   App Title: Analysis of Assaults on Law Enforcement
+   
+   Group members:
+   
+   Pinyu Chen (Data-613)
+   
+   Daniel Bernal Ranqueva (Data-613)
+   
+   Yaning Wu (Data-613)
+   
+
+# 2. Topic and Data
+## Description of the problem to be analyzed in the Shiny App
+
+   According to categorical variables like year, state, region, activity type, type of weapon, time, number of officers who got assaulted, we seek to find the following problems:
+   
+   Proportion of attacks on police officers in each state each year.
+   
+   Proportion of attacks on police officers in each region each year.
+   
+   The number of incidents as response variable, and other variables such as area, police staffing, time of occurrence, type of activity that received the attack as explanatory variables, seek significant variables.
+
+## Proposed data sources.
+
+Data sources come from: https://crime-data-explorer.app.cloud.gov/pages/downloads
+
+Assaults on Law Enforcement Officers:
+
+LEOKA_ASSAULT_TIME_WEAPON_INJURY_1995_2020.csv, 302093 rows.
+
+LEOKA_ASSIGNMENT_ACTIVITY_1995_2020.csv, 3228659 rows.
+
+Data sets come from the website of Federal Bureau of Investigation
+Crime Data Explorer. Datasets in terms of reported assaults against law enforcement officers annually by the unit of agencies. They include two tables, each one consisting of data from 1995 to 2020. The law enforcement officers are defined as individuals who ordinarily carry a firearm and a badge, have full arrest powers, and are paid from governmental funds set aside specifically to pay sworn law enforcement.
+
+Each observation is the record of incidents of one year for each agency. The main variables we want to analyze are: the time, region, weapon type, activity type, and police officers' allocation, etc.
+
+## Status of Literature Review
+
+After a careful review of the literature, we found that crime is a well-studied topic that has a wide variety of scopes. We identified literature that studies crime against law enforcement in a variety of scenarios such as illegal immigration and cross-border social control(McDonald, 1997). Other studies, despite their antiquity, focus on topics such as public perception towards crime and law enforcement (McIntyre, 1967) that nowadays have been the center of interesting discussions. Furthermore, other scopes include studies that focus on whether female officers improve law enforcement quality in terms of crime reporting and domestic violence (Miller & Segal, 2019). In Summary, there is a wide variety of scopes in this field and to the best of our knowledge, they do not include detailed analysis such as the one intended by this project. Given this, we consider that it will be a useful opportunity to deliver an analysis that will provide a more detailed coverage for the audience interested in this field.
+
+
+# 3. Use Case
+## Actor Description
+
+We hope that this program can provide the police or non-official website security agencies with a reference for personnel arrangement. For example, according to the results of the app analysis and display, we can design the allocation of police officers for certain activities in a certain region, whether we need police officers' partner activities, whether we pay attention to working hours, etc. At the same time, we hope that this app can also provide suggestions for people who want to work in security to consider occupational safety in the future. Finally, intend that relevant government administrators can also use this app as a reference for making policies.
+
+## Questions of Interest
+
+   1. From 1995 to 2020, what is the change of the main weapon types of assaulting police officers?
+   
+   2. Are the main weapons types of different states, counties or regions very different, and is this related to the local gun control policy?
+   
+   3. What are the relatively frequent periods of assaulting police officers in various regions?
+   
+   4. What is the relationship between the number of vehicles, the number of police officers and the type of activities and the occurrence of the incident?
+ 
+## Fixed or Dynamic Data
+
+Original data sets have 302093 and 3228659 rows. The two data sets need to be tidied before analysis is implemented. Since they are annual reports, every row of data is a record of an agency for a specific year. Data could be grouped by region, area, year, or state for different analysis purposes. Variables mentioned above also need to be transformed to factors.
+
+# 4. App Concept
+## General Layout
+
+**One tab for EDA:**
+
+Histogram:
+Different types of weapon or number of records in the state and county.
+For every state, show the distribution of weapon type. Selected by year.
+
+Scatter plot:
+Overall trend of number of incidents by year.
+
+
+**One tab for statistical analysis:**
+
+ANOVA table.
+
+Summary of regression model.
+
+Diagnostics.
+
+
+**One tab of spreadsheet:**
+
+Spreadsheet of two original data sets.
+
+## Proposed options for user data manipulations (if any)
+
+Create check boxes to select interesting variables.
+Create bins to check different weapons used in different years.
+Select States or Counties to check weapon type and number of records.
+
+# 5. App Concept
+## Proposed options for user numerical/graphical analysis
+
+Variable selection
+   which variable to compare and show in the plot.
+Scatter plot to compare the number of weapons or officers in time.
+Boxplot to compare different regions, states, or counties number of crime records, officers, or weapons.
+Jitter plots to compare different numbers of records or types of weapon that involve different regions, states, and counties.
+   
+##  Proposed App Theme
+
+   Boothswatch theme version 5. (Clear style of theme to improve the vision effect of this app to the user)
+   
+##  Proposed options for user statistical models and tests
+
+ Regression model:
+
+Total number of attacks on officers in all institutions in each county each year as y variable. Variables selected from other predictors like year, area, type of activity etc.as x variables. Constructing a regression model for the user and presenting summary output, the output could indicate significance of each variable.
+
+ Assumption to check if model is appropriate (residual, qq plot)
+
+ANOVA table to check if there are differences in region with main type of weapon or number of crime records.
+   
+# 6. Ethical Review    
+## Discussion of ethics review
+While assessing the stages or our project, we considered several factors to identify possible ethical issues. The assessment is composed of two parts that contain rules and policies that we must follow throughout the project and emerging biases that could compromise our process and the outcome of the analysis.
+The first elements that we must account for are the rules, policies, and deliverables of the project itself that are closely accompanied by the American University’s Student Code of Conduct to ensure transparency and student compliance with our deliverables.
+The second set of elements are related to the evaluation and selection of our data. Our main concern is to make our work informative without violating privacy of individuals involved in crimes, therefore, it was important to select sources that didn’t contain any personal identifiable information that could compromise our research intentions.
+Additionally, we identified ethical challenges that can arise from our own biases or the biases of others affecting our data, thoughts, and actions. We considered availability heuristic bias given the data sources that we encountered, our sources must have the information and richness required for our analysis. Furthermore, we are aware of the bandwagon effect, we understand that accountability is what matters most and all opinions are important. Overconfidence is a concern that we will be evaluated as the project develops since it can become an issue in the future if we don’t plan well enough.
+Lastly, and moving forward, we will assess biases across the life cycle of the project because there could be emerging conflicts that must be addressed and solved together to be able to meet project expectations and deliver high quality outcomes. 
+   
+# 7. Responsibilities   
+## Names and Responsibilities for the group members
+
+The following allocation is temporary and will change slightly in the future.
+
+   EDA Pinyu Chen
+   
+   ANOVA Yaning Wu
+   
+   Regression Daniel Bernal Ranqueva
+   
+   UI of shiny app - By cooperation, we probably assign each member a tab.
+
+# 8. Collaboration 
+## Approach to collaboration and Branching
+
+Everyone is responsible for the UI and the corresponding server, so that even before the summary, the output and implementation of their respective functions will not be affected. After completing a stage (such as a tab), push it to github through another branch, and push it to main's app if there is no problem in operation. When the same data needs to be used, the reactive function among members can be shared. Adding comments for each module and test, it is easy to modify and maintain.
+
+# 9. Schedule    
+## Dates for Major Phases and Milestones, e.g., Gathering of Data, Data Preparation, Milestones for developing the App, Code Cutoff, Producing the Vignette
+
+   3/16/2022 Gathering potential of Data 3/16/2022 (Still have time to find other if we can do better analysis)
+   
+   3/17/2022 ~ 3/25/2022 Data Preparation (after professor's review and comment)
+   
+   3/28/2022 ~ 4/18/2022 Milestones for developing the App 3/31/2022
+   
+   4/19/2022 Code Cutoff 
+   
+   4/19/2022 ~ 4/27/2022 Producing the Vignette 
+
+# 10. References
+McDonald, W. (1997). Crime and Law Enforcement in the Global Village. Academy of Criminal Justice Sciences Series, https://www.ojp.gov/ncjrs/virtual-library/abstracts/crime-and-law-enforcement-global-village.
+
+McIntyre, J. (1967). Public Attitudes toward Crime and Law Enforcement. The ANNALS of the American Academy of Political and Social Science, 34-46, https://journals.sagepub.com/doi/abs/10.1177/000271626737400104.
+
+Miller, A. R., & Segal, C. (2019). Do Female Officers Improve Law Enforcement Quality? Effects on Crime Reporting and Domestic Violence . The Review of Economic Studies, Volume 86, Issue 5, 2220–2247, https://academic.oup.com/restud/article-abstract/86/5/2220/5101317.
+

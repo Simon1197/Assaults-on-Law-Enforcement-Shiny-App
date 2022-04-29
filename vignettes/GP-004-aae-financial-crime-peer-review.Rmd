@@ -1,0 +1,40 @@
+---
+title: "Peer Review - Financial Crime"
+author: "Daniel Bernal, Pin-Yu Chen, Yaning Wu"
+date: "4/3/2022"
+output: html_document
+---
+
+## 1. Date of Peer review and participants
+
+Date: April 4th, 2022 - 5:00 pm
+
+Participants:
+  
+  GP -004 aae Financial Crime:
+    - Amanda Robic
+    - Ashley Mann
+    - Elizabeth Wahlenmayer
+    
+  GP-004-ypd-crime:
+    - Pin-Yu Chen
+    - Yaning Wu
+    - Daniel Bernal
+    
+## 2. Summary of the review
+
+We consider that the financial crime project is very well structured. Their approach aims to address and explain common trends and provide insights for a better understanding of financial crime data and statistics. The layout of their app follows a logical pattern, that under our consideration, provides a lot of details and tools that will be beneficial for the end user.
+Additionally, we consider that their deliverables are reasonable and are aligning so far with the proposed time frame. 
+
+## 3. Recommendations
+### About the data source
+The data sources of this project are comprehensive and there are many different types of variables. The only concern about those sources is some of the sources might not useful for the purpose of analysis depends on the selection of each observation.
+
+### About the shiny app and distribution
+This part is well organized and illustrated. This will be a wonderful app corresponds to the plan. The project has analysis of regression, visual plots and trend prediction which fulfill all requirements of project.
+
+### About literature review and ethic review
+Like the literature review mentioned, the implementation of this app will significantly improve creation of techniques for detecting and preventing financial crimes. It will provide direction of decreasing such crimes.
+
+## 4. Conclusion 
+Overall, it was a solid introduction of the topic and the approach. The only recommendation is to ensure that their data is solid and rich enough to support their intentions.

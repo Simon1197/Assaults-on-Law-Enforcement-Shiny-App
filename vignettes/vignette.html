@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Daniel Bernal Ranqueva, Pinyu Chen, Yaning Wu" />
+
+<meta name="date" content="2022-04-28" />
+
+<title>Analysis of assaults on Law Enforcement Officers</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Analysis of assaults on Law Enforcement Officers</h1>
+<h4 class="author">Daniel Bernal Ranqueva, Pinyu Chen, Yaning Wu</h4>
+<h4 class="date">2022-04-28</h4>
+
+
+
+<div id="use-case" class="section level2">
+<h2>1. Use Case</h2>
+<p>The main purpose of the app is to analyze the number of assaults against law enforcement officers in the United States. We aim to provide useful insights about the total number of assaults and identify significant changes during the past decade, from 2011 to 2020.</p>
+<p>There are variables that are associated with the number of assaults in a decade like different type of activities, injury situations, assignment types, median income of each county, population and education situation etc. Through the EDA part, users could visually observe changes and distribution of each other’s attributes. By building a model, users could check and see whether there are significant variables that affect assaults.</p>
+<p>We hope that this app can provide more intuitive and sustainable reference for relevant departments, such as agencies in various regions. We hope that it can provide more reliable suggestions for the deployment of police officers’ different activities, and people who are engaged in or want to engage in this industry can also get references for their career choices.</p>
+<p><strong>Users flow:</strong></p>
+<p>Start from the State and county tab, observing total assaults of all states by year. The count of some representative states like California and DC are decreasing. Then select a specific variable like assignment or weapon to see what category has the most count and which one is the least. Jump to the County tab, check whether the distribution of variables are similar between counties in the state. Numerical variables could also be seen by maps.</p>
+<p>Step to tab Regression Analysis by County, by adjusting x variables, exploring a powerful regression model that could explain the data most. Checking diagnostics results for assumptions test.</p>
+</div>
+<div id="required-packages" class="section level2">
+<h2>2. Required Packages</h2>
+<p>Packages in this app includes:</p>
+<p>tidyverse (for manipulating datasets like data clean)</p>
+<p>sf (for map use)</p>
+<p>tigris (for loading census data)</p>
+<p>viridis (for color map use)</p>
+</div>
+<div id="data-source-and-structure" class="section level2">
+<h2>3. Data Source and Structure</h2>
+<p>Two original data can be found from below link: <a href="https://crime-data-explorer.app.cloud.gov/pages/downloads" class="uri">https://crime-data-explorer.app.cloud.gov/pages/downloads</a></p>
+<p>The dataset is quite large and takes a while to load into rstudio, so we decide to compress the file to RDS type to make the system load these data easier and faster.</p>
+<div id="leoka1.ori.rds" class="section level3">
+<h3>leoka1.ori.RDS</h3>
+</div>
+<div id="leoka2.ori.rds" class="section level3">
+<h3>leoka2.ori.RDS</h3>
+<p>There are 5 tables for this app. They are separated from two original data sets and also combine other data from the census.</p>
+</div>
+<div id="leo1.injury.rds" class="section level3">
+<h3>leo1.injury.RDS</h3>
+<p>Variables: DATA_YEAR, STATE, COUNTY_NAME, INJURY, total_per_type, total_county</p>
+<p>This table has information about whether policemen were injured or killed by some kind of weapon like firearms, knives or others. Variable INJURY is a categorical, total_per_type is the number of assaults according to different injury categories. total_county is the total number of assaults by injury.</p>
+</div>
+<div id="leo2.activity.rds" class="section level3">
+<h3>leo2.activity.RDS</h3>
+<p>Variables: DATA_YEAR, STATE, COUNTY_NAME, ACTIVITY_NAME, total_per_type, total_county</p>
+<p>Other variables are the same meaning with table leo1.injury.RDS, the difference is total_per_type and total_county belong to different activity.</p>
+</div>
+<div id="leo2.assign.rds" class="section level3">
+<h3>leo2.assign.RDS</h3>
+<p>Variables: DATA_YEAR, STATE, COUNTY_NAME, total_county, ASSIGNMENT, total_per_type, total_county</p>
+<p>Main variable is “ASSIGNMENT”, numerical variables are grouped by this categorical variable.</p>
+</div>
+<div id="leo2.assign.rds-1" class="section level3">
+<h3>leo2.assign.RDS</h3>
+<p>Main variable is “ASSIGNMENT”, numerical variables are grouped by this categorical variable. Other attributes after total_county is the population, please refer to below table for detailed explanation.</p>
+</div>
+<div id="leo2_other.rds" class="section level3">
+<h3>leo2_other.RDS</h3>
+<p>Variables: DATA_YEAR, STATE, REGION_NAME, POPULATION_GROUP_DESC, COUNTY_NAME, total_county, total_county_cleared, GEOID, median_income, county_pop, male_pop, unemployee_pop, get_Bachelor, others_race, Asian_pop, Black_pop, White_pop, Indian_pop, Hawaiian_pop.</p>
+<p>This table is mainly used for regression model fit. Every observation is the annual summary of counties. median_income is the median income of each county. total_county_cleared is the number of offenders who have been arrested. Variables end by “_pop” is the population of the county. Like get_Bachelor is the number of people who have bachelor degree and male_pop is the male number of the county.</p>
+<p>All these attributes will provide additional information for the model fit. We could find significant variables that could affect the number of assaults in the county.</p>
+</div>
+</div>
+<div id="eda-inputs-controls-and-outputs" class="section level2">
+<h2>4. EDA Inputs, Controls, and Outputs</h2>
+<p>Tabs State, County, State Map and County Map are EDA of the data.</p>
+<p>Inputs of the State and County tab include state, county(for tab County), year and a single variable. Year could be selected multiple years at the same time, there will be a facet effect. The default bar chart is the total count of assaults for each county of 2020. Switching “Plot” and “Static” on the right side, the plot will transfer from bar plot to statistics effect. Through the two tabs, users could observe the count changed by different categories and distributions by year visually.</p>
+<p>State Map and County Map tabs are the parameters that are presented as a map, allowing the user to select different parameters and observe the color changes geographically.</p>
+</div>
+<div id="statistical-analysis-inputs-controls-and-outputs" class="section level2">
+<h2>5. Statistical Analysis Inputs, Controls, and Outputs</h2>
+<p>The Regression Analysis by County tab is for Statistical Analysis. The response variable is unchanged which is the total count of assaults of counties. Users could select one or multiple x variables from the left. All of them are numerical variables.</p>
+<p>There are five subsets of the results. “Model Summary” is the summary result of the customized regression model. “Correlation” presents correlation values between variables. Model Fit is the diagnostic plots and normality test of the model. Data output is the source date of model fit. And the bivariate tab shows the scatter plot of two selected variables.</p>
+<p>There are anova summaries about Region, Weapon and Activity variables. Users will be able to get hypothesis conclusions by checking the outputs.</p>
+</div>
+<div id="contribution-of-the-project" class="section level2">
+<h2>6. Contribution of the project</h2>
+<p>Data clean stage: Completed by all members.</p>
+<p>After cleaning the data, we separated each part by tabs, each member taking charge of server and ui sections.</p>
+<p>State and County tabs: Yaning Wu</p>
+<p>All map tabs and Spreadsheet: Pinyu Chen</p>
+<p>Regression Analysis by County and Anova-County Level tabs: Daniel Bernal Ranqueva</p>
+<p>Adjustment of app style: Daniel Bernal Ranqueva</p>
+</div>
+<div id="references" class="section level2">
+<h2>7. References</h2>
+<p>McDonald, W. (1997). Crime and Law Enforcement in the Global Village. Academy of Criminal Justice Sciences Series, <a href="https://www.ojp.gov/ncjrs/virtual-library/abstracts/crime-and-law-enforcement-global-village" class="uri">https://www.ojp.gov/ncjrs/virtual-library/abstracts/crime-and-law-enforcement-global-village</a>.</p>
+<p>McIntyre, J. (1967). Public Attitudes toward Crime and Law Enforcement. The ANNALS of the American Academy of Political and Social Science, 34-46, <a href="https://journals.sagepub.com/doi/abs/10.1177/000271626737400104" class="uri">https://journals.sagepub.com/doi/abs/10.1177/000271626737400104</a>.</p>
+<p>Miller, A. R., &amp; Segal, C. (2019). Do Female Officers Improve Law Enforcement Quality? Effects on Crime Reporting and Domestic Violence . The Review of Economic Studies, Volume 86, Issue 5, 2220–2247, <a href="https://academic.oup.com/restud/article-abstract/86/5/2220/5101317" class="uri">https://academic.oup.com/restud/article-abstract/86/5/2220/5101317</a>.</p>
+<p>Willits, D. W. (2014). The organizational structure of police departments and assaults on police officers. International Journal of Police Science &amp; Management, 16(2), 140-154.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

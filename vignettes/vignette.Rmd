@@ -1,0 +1,118 @@
+---
+title: "Analysis of assaults on Law Enforcement Officers"
+author: "Daniel Bernal Ranqueva, Pinyu Chen, Yaning Wu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{my-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## 1. Use Case
+The main purpose of the app is to analyze the number of assaults against law enforcement officers in the United States. We aim to provide useful insights about the total number of assaults and identify significant changes during the past decade, from 2011 to 2020.
+
+There are variables that are associated with the number of assaults in a decade like different type of activities, injury situations, assignment types, median income of each county, population and education situation etc. Through the EDA part, users could visually observe changes and distribution of each other's attributes. By building a model, users could check and see whether there are significant variables that affect assaults.
+
+We hope that this app can provide more intuitive and sustainable reference for relevant departments, such as agencies in various regions. We hope that it can provide more reliable suggestions for the deployment of police officers’ different activities, and people who are engaged in or want to engage in this industry can also get references for their career choices.
+
+
+__Users flow:__
+
+Start from the State and county tab, observing total assaults of all states by year. The count of some representative states like California and DC are decreasing. Then select a specific variable like assignment or weapon to see what category has the most count and which one is the least. Jump to the County tab, check whether the distribution of variables are similar between counties in the state. Numerical variables could also be seen by maps.
+
+Step to tab Regression Analysis by County, by adjusting x variables, exploring a powerful regression model that could explain the data most. Checking diagnostics results for assumptions test.
+
+## 2. Required Packages
+Packages in this app includes:
+
+tidyverse (for manipulating datasets like data clean)
+
+sf (for map use)
+
+tigris (for loading census data)
+
+viridis (for color map use)
+
+## 3. Data Source and Structure
+Two original data can be found from below link:
+https://crime-data-explorer.app.cloud.gov/pages/downloads
+
+The dataset is quite large and takes a while to load into rstudio, so we decide to compress the file to RDS type to make the system load these data easier and faster.
+
+### leoka1.ori.RDS
+
+### leoka2.ori.RDS
+
+There are 5 tables for this app. They are separated from two original data sets and also combine other data from the census.
+
+### leo1.injury.RDS
+Variables: DATA_YEAR, STATE, COUNTY_NAME, INJURY, total_per_type, total_county
+
+This table has information about whether policemen were injured or killed by some kind of weapon like firearms, knives or others. Variable INJURY is a categorical, total_per_type is the number of assaults according to different injury categories. total_county is the total number of assaults by injury.
+
+### leo2.activity.RDS
+Variables: DATA_YEAR, STATE, COUNTY_NAME, ACTIVITY_NAME, total_per_type, total_county
+
+Other variables are the same meaning with table leo1.injury.RDS, the difference is total_per_type and total_county belong to different activity.
+
+### leo2.assign.RDS
+Variables: DATA_YEAR, STATE, COUNTY_NAME, total_county, ASSIGNMENT, total_per_type, total_county
+
+Main variable is "ASSIGNMENT", numerical variables are grouped by this categorical variable.
+
+### leo2.assign.RDS
+Main variable is "ASSIGNMENT", numerical variables are grouped by this categorical variable. Other attributes after total_county is the population, please refer to below table for detailed explanation.
+
+### leo2_other.RDS
+Variables: DATA_YEAR, STATE, REGION_NAME, POPULATION_GROUP_DESC, COUNTY_NAME, total_county, total_county_cleared, GEOID, median_income, county_pop, male_pop, unemployee_pop, get_Bachelor, others_race, Asian_pop, Black_pop, White_pop, Indian_pop, Hawaiian_pop.
+
+This table is mainly used for regression model fit. Every observation is the annual summary of counties. median_income is the median income of each county. total_county_cleared is the number of offenders who have been arrested. Variables end by "_pop" is the population of the county. Like get_Bachelor is the number of people who have bachelor degree and male_pop is the male number of the county.
+
+All these attributes will provide additional information for the model fit. We could find significant variables that could affect the number of assaults in the county.
+
+## 4. EDA Inputs, Controls, and Outputs
+Tabs State, County, State Map and County Map are EDA of the data.
+
+Inputs of the State and County tab include state, county(for tab County), year and a single variable. Year could be selected multiple years at the same time, there will be a facet effect. The default bar chart is the total count of assaults for each county of 2020. Switching "Plot" and "Static" on the right side, the plot will transfer from bar plot to statistics effect. Through the two tabs, users could observe the count changed by different categories and distributions by year visually.
+
+
+State Map and County Map tabs are the parameters that are presented as a map, allowing the user to select different parameters and observe the color changes geographically.
+
+## 5. Statistical Analysis Inputs, Controls, and Outputs
+The Regression Analysis by County tab is for Statistical Analysis. The response variable is unchanged which is the total count of assaults of counties. Users could select one or multiple x variables from the left. All of them are numerical variables.
+
+There are five subsets of the results. "Model Summary" is the summary result of the customized regression model. "Correlation" presents correlation values between variables. Model Fit is the diagnostic plots and normality test of the model. Data output is the source date of model fit. And the bivariate tab shows the scatter plot of two selected variables.
+
+There are anova summaries about Region, Weapon and Activity variables. Users will be able to get hypothesis conclusions by checking the outputs. 
+
+## 6. Contribution of the project
+Data clean stage: Completed by all members.
+
+After cleaning the data, we separated each part by tabs, each member taking charge of server and ui sections.
+
+State and County tabs: Yaning Wu
+
+All map tabs and Spreadsheet: Pinyu Chen
+
+Regression Analysis by County and Anova-County Level tabs: Daniel Bernal Ranqueva
+
+Adjustment of app style: Daniel Bernal Ranqueva
+
+## 7. References
+McDonald, W. (1997). Crime and Law Enforcement in the Global Village. Academy of Criminal Justice Sciences Series, https://www.ojp.gov/ncjrs/virtual-library/abstracts/crime-and-law-enforcement-global-village.
+
+McIntyre, J. (1967). Public Attitudes toward Crime and Law Enforcement. The ANNALS of the American Academy of Political and Social Science, 34-46, https://journals.sagepub.com/doi/abs/10.1177/000271626737400104.
+
+Miller, A. R., & Segal, C. (2019). Do Female Officers Improve Law Enforcement Quality? Effects on Crime Reporting and Domestic Violence . The Review of Economic Studies, Volume 86, Issue 5, 2220–2247, https://academic.oup.com/restud/article-abstract/86/5/2220/5101317.
+
+Willits, D. W. (2014). The organizational structure of police departments and assaults on police officers. International Journal of Police Science & Management, 16(2), 140-154.
+
+
